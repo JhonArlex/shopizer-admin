@@ -50,11 +50,18 @@ export class InventoryFormComponent implements OnInit {
       .subscribe(res => {
         this.languages = [...res];
         this.createForm();
-        if (this.inventory.id) {
-          this.fillForm();
-        }
+        this.getInventoryById();
         this.loader = false;
       });
+  }
+
+  getInventoryById() {
+    this.inventoryService.getInventoryById(this.productId, this.inventory.id).subscribe(res => {
+      if (res){
+        this.inventory = res;
+        this.fillForm();
+      }
+    });
   }
 
   private createForm() {
@@ -70,8 +77,8 @@ export class InventoryFormComponent implements OnInit {
     this.form.patchValue({
       store: this.inventory.store.code,
       owner: this.inventory.owner,
-      dateAvailable: this.inventory.dateAvailable,
       quantity: this.inventory.quantity,
+      dateAvailable: new Date(this.inventory.dateAvailable)
     });
   }
 
